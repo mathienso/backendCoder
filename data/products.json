@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "title": "Cordones Azules",
+    "description": "Cordones azules",
+    "code": "CAS",
+    "price": 250,
+    "status": true,
+    "stock": 25,
+    "category": "laces"
+  },
+  {
+    "id": 3,
+    "title": "Cordones Amarillos",
+    "description": "Cordones amarillos",
+    "code": "CAMS",
+    "price": 200,
+    "status": true,
+    "stock": 25,
+    "category": "laces"
+  },
+  {
+    "id": 4,
+    "title": "Cordones Naranjas",
+    "description": "Cordones naranjas",
+    "code": "CNS",
+    "price": 200,
+    "status": true,
+    "stock": 25,
+    "category": "laces",
+    "thumbnail": []
+  }
+]
