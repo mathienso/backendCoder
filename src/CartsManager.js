@@ -53,7 +53,6 @@ export default class CartManager {
         newProducts = e.products.map((p) => {
           if (p.product === productId) {
             isFoundProduct = true;
-            console.log(p);
             return {
               ...p,
               quantity: p.quantity + 1,

@@ -69,3 +69,13 @@ router.delete("/:pid", async (req, res) => {
 });
 
 export default router;
+ /* 
+ try {
+  const products = await productManager.getProducts();
+  res.send({
+    status: "Success",
+    payload: products,
+  });
+ } catch(error) {
+  res.status(500).send({})
+ } */
