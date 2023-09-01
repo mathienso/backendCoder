@@ -1,0 +1,30 @@
+<div>
+  <h1>Ingresar nuevo producto</h1>
+  <form>
+    <div><input type='text' id='title' placeholder='Titulo' /></div>
+    <div><input type='text' id='description' placeholder='Descripcion' /></div>
+    <div><input type='text' id='code' placeholder='Codigo' /></div>
+    <div><input type='number' id='price' placeholder='Precio' /></div>
+    <div><input type='text' id='status' placeholder='Estado' /></div>
+    <div><input type='number' id='stock' placeholder='Stock' /></div>
+    <div><input type='text' id='category' placeholder='Categoria' /></div>
+    <div><input id='btnAddProduct' type='submit' value='Enviar' /></div>
+  </form>
+  <div class='divider'></div>
+
+  <table id='table'>
+    {{#each products}}
+      <tr>
+        <td><button onclick="deleteProduct({{this.id}})">Eliminar</button></td>
+        <td>{{this.title}}</td>
+        <td>{{this.description}}</td>
+        <td>{{this.price}}</td>
+        <td>{{this.thumbnail}}</td>
+        <td>{{this.code}}</td>
+        <td>{{this.stock}}</td>
+      </tr>
+    {{/each}}
+  </table>
+</div>
+<script src='/socket.io/socket.io.js'></script>
+<script src='/js/index.js'></script>

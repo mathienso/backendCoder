@@ -1,17 +1,17 @@
 <div>
-    <h1>Lista de productos:</h1>
-    <br><br>
-    {{# each products}}
-    <p>Titulo: {{title}}</p>
-    <p>Descripcion: {{description}}</p>
-    <p>Precio: {{price}}</p>
-    <p>Status: {{status}}</p>
-    <p>Thumbnail: {{thumbnail}}</p>
-    <p>Code: {{code}}</p>
-    <p>Stock: {{stock}}</p>
-    <p>Id: {{id}}</p>
-    <br><br>
+  <h1>Lista de productos:</h1>
+  <table>
+    {{#each products}}
+      <tr>
+        <td>Titulo: {{this.title}}</td>
+        <td>Descripcion: {{this.description}}</td>
+        <td>Precio: {{this.price}}</td>
+        <td>Status: {{this.status}}</td>
+        <td>Thumbnail: {{this.thumbnail}}</td>
+        <td>Code: {{this.code}}</td>
+        <td>Stock: {{this.stock}}</td>
+        <td>Id: {{this.id}}</td>
+      </tr>
     {{/each}}
+  </table>
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>

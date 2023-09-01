@@ -3,11 +3,13 @@ import productRouter from './routes/products/products.router.js';
 import cartRouter from './routes/carts/carts.router.js';
 import productsViewRouter from './routes/products/productsView.router.js';
 import handlebars from 'express-handlebars';
-import {Server} from 'socket.io';
+import { Server } from 'socket.io';
 
 //inicio app con express
 const app = express();
-const httpServer = app.listen(8080, () => {console.log('Servidor funcionando en el puerto: ' + 8080);});
+const httpServer = app.listen(8080, () => {
+  console.log('Servidor funcionando en el puerto: ' + 8080);
+});
 //inicio websockets
 const io = new Server(httpServer);
 
@@ -26,7 +28,12 @@ app.use('/', productsViewRouter);
 app.use('/products', productRouter);
 app.use('/carts', cartRouter);
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   console.log('nuevo cliente');
-})
-
+  socket.on('productList', data => {
+    io.emit('updatedProducts', data)
+  })
+  socket.on('message', body => {
+    console.log(body)
+  })
+});

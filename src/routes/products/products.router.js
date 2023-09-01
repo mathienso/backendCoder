@@ -62,9 +62,10 @@ router.delete("/:pid", async (req, res) => {
     return res.send({ error: "Producto no encontrado" });
   }
   let deletedProduct = await productManager.deleteProduct(pid);
+  const products = await productManager.getProducts();
   res.send({
     status: "Success",
-    payload: deletedProduct,
+    payload: products,
   });
 });
 
