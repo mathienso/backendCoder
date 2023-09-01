@@ -1,12 +1,34 @@
 [
   {
     "id": 1,
+    "title": "qwe",
+    "description": "qwe",
+    "price": "123",
+    "code": "qwe",
+    "stock": "123",
+    "category": "qwe",
+    "status": true,
+    "thumbnail": []
+  },
+  {
+    "id": 2,
     "title": "asd",
     "description": "asd",
     "price": "123",
     "code": "asd",
     "stock": "123",
-    "category": "asd",
+    "category": "aqsd",
+    "status": true,
+    "thumbnail": []
+  },
+  {
+    "id": 3,
+    "title": "zxc",
+    "description": "zxc",
+    "price": "123",
+    "code": "zxc",
+    "stock": "123",
+    "category": "zxc",
     "status": true,
     "thumbnail": []
   }

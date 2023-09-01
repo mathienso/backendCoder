@@ -30,10 +30,12 @@ app.use('/carts', cartRouter);
 
 io.on('connection', (socket) => {
   console.log('nuevo cliente');
-  socket.on('productList', data => {
-    io.emit('updatedProducts', data)
-  })
-  socket.on('message', body => {
-    console.log(body)
-  })
+  socket.on('productList', (data) => {
+    console.log('updatedProducts');
+    console.log(data);
+    io.emit('updatedProducts', data);
+  });
+  socket.on('message', (body) => {
+    console.log(body);
+  });
 });

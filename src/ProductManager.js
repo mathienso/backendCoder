@@ -36,6 +36,7 @@ export default class ProductManager {
     async getProducts() {
         if(!fs.existsSync(this.#path)) return '[ERR] DB file dont exists.';
         let data = await fs.promises.readFile(this.#path, 'utf-8');
+        console.log(data);
         const products = JSON.parse(data);
         return products;
     }

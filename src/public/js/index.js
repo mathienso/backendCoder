@@ -3,7 +3,7 @@ const socket = io();
 const table = document.getElementById('table');
 
 document.getElementById('btnAddProduct').addEventListener('click', () => {
-  const body = {
+  const prod = {
     title: document.getElementById('title').value,
     description: document.getElementById('description').value,
     price: document.getElementById('price').value,
@@ -12,9 +12,10 @@ document.getElementById('btnAddProduct').addEventListener('click', () => {
     category: document.getElementById('category').value,
     status: true,
   };
+  socket.emit('message', prod);
   fetch('/products', {
     method: 'post',
-    body: JSON.stringify(body),
+    body: JSON.stringify(prod),
     headers: {
       'Content-type': 'application/json',
     },
@@ -42,16 +43,21 @@ deleteProduct = (id) => {
   fetch(`/products/${id}`, {
     method: 'delete',
   })
+    /* .then((result) => {
+      socket.emit('message', result);
+    }) */
     .then((result) => result.json())
     .then((result) => {
-      if (result.status === 'error') throw new Error(result.error);
+      //if (result.status === 'error') throw new Error(result.error);
+      socket.emit('message', result);
       socket.emit('productList', result.payload);
+      alert('producto eliminado correctamente');
     })
     .catch((err) => alert(err));
 };
 
 socket.on('updatedProducts', (data) => {
-  /* table.innerHTML = `<tr>
+  table.innerHTML = `<tr>
             <td></td>
             <td>Producto</td>
             <td>Descripcion</td>
@@ -59,12 +65,13 @@ socket.on('updatedProducts', (data) => {
             <td>Codigo</td>
             <td>Stock</td>
             <td>Categoria</td>
-        </tr>`;   */
+        </tr>`;
+  socket.emit('message', 'entro a updatear');
   for (product of data) {
     let tr = document.createElement('tr');
     tr.innerHTML = `
             <td><button onclick="deleteProduct(${product.id})">Eliminar</button></td>
-            <td>${product.name}</td>
+            <td>${product.title}</td>
             <td>${product.description}</td>
             <td>${product.price}</td>
             <td>${product.code}</td>
