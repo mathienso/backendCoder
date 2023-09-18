@@ -31,5 +31,16 @@
     "category": "zxc",
     "status": true,
     "thumbnail": []
+  },
+  {
+    "id": 4,
+    "title": "qqrqr",
+    "description": "wqerwewer",
+    "price": "12321",
+    "code": "wewefw",
+    "stock": "1234",
+    "category": "aaf",
+    "status": true,
+    "thumbnail": []
   }
 ]

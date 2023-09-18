@@ -28,6 +28,7 @@ document.getElementById('btnAddProduct').addEventListener('click', () => {
     .then((result) => result.json())
     .then((result) => {
       if (result.status === 'error') throw new Error(result.error);
+      socket.emit('message', result);
       socket.emit('productList', result.payload);
       document.getElementById('title').value = '';
       document.getElementById('description').value = '';
@@ -35,6 +36,7 @@ document.getElementById('btnAddProduct').addEventListener('click', () => {
       document.getElementById('code: ').value = '';
       document.getElementById('stock').value = '';
       document.getElementById('category').value = '';
+      alert('producto agregado correctamente');
     })
     .catch((err) => console.log(err));
 });
