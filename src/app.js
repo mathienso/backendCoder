@@ -1,7 +1,7 @@
 import express from 'express';
-import productRouter from './routes/products/products.router.js';
-import cartRouter from './routes/carts/carts.router.js';
-import productsViewRouter from './routes/products/productsView.router.js';
+import productRouter from './api/products/products.router.js';
+import cartRouter from './api/carts/carts.router.js';
+import productsViewRouter from './api/products/productsView.router.js';
 import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
 

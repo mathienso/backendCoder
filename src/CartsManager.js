@@ -14,7 +14,7 @@ export default class CartManager {
   }
 
   async addCart() {
-    if (!fs.existsSync(this.#path)) return "[ERR] DB file dont exists.";
+    if (!fs.existsSync(this.#path)) throw new Error('Archivo DB no existe');
 
     let data = await fs.promises.readFile(this.#path, "utf-8");
     let carts = JSON.parse(data);
@@ -26,7 +26,7 @@ export default class CartManager {
   }
 
   async getCarts() {
-    if (!fs.existsSync(this.#path)) return "[ERR] DB file dont exists.";
+    if (!fs.existsSync(this.#path)) throw new Error('Archivo DB no existe');
     let data = await fs.promises.readFile(this.#path, "utf-8");
     const carts = JSON.parse(data);
     return carts;
@@ -35,12 +35,12 @@ export default class CartManager {
   async getCartById(id) {
     const carts = await this.getCarts();
     let cart = carts.find((e) => e.id === id);
-    if (!cart) return "[ERR] Not found.";
+    if (!cart) throw new Error('Carrito no encontrado');
     return cart;
   }
 
   async addProductToCart(cartId, productId) {
-    if (!fs.existsSync(this.#path)) return "[ERR] DB file dont exists.";
+    if (!fs.existsSync(this.#path)) throw new Error('Archivo DB no existe');
     let isFoundCart = false;
     let isFoundProduct = false;
     let newProducts;
@@ -77,7 +77,7 @@ export default class CartManager {
         };
       } else return e;
     });
-    if (!isFoundCart) return "[ERR] Cart does not exists.";
+    if (!isFoundCart) throw new Error('Carrito no encontrado');
     await fs.promises.writeFile(this.#path, JSON.stringify(newCarts, null, 2));
     return newCarts;
   }
