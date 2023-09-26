@@ -7,15 +7,15 @@ export default class ProductManager {
     this.#init();
   }
 
-  async #init() {
+  #init() {
     if (!fs.existsSync(this.#path)) {
-      await fs.promises.writeFile(this.#path, JSON.stringify([], null, 2));
+      fs.promises.writeFile(this.#path, JSON.stringify([], null, 2));
     }
   }
 
   async addProduct(product) {
     if (!product.title || !product.description || !product.price || !product.status || !product.code || !product.stock || !product.category) {
-        throw new Error('Completar todos los campos');
+      throw new Error('Completar todos los campos');
     }
     if (product.thumbnail == '' || product.thumbnail == null) {
       product.thumbnail = [];
@@ -24,11 +24,15 @@ export default class ProductManager {
     let data = await fs.promises.readFile(this.#path, 'utf-8');
     let products = JSON.parse(data);
     if (products.find((e) => e.code === product.code)) {
-        throw new Error('El codigo ya existe');
+      throw new Error('El codigo ya existe');
     }
+    if (isNaN(product.stock)) {
+      throw new Error('El stock debe ser un número');
+    }
+    product.stock = parseFloat(product.stock);
     const productToAdd = { id: this.#getId(products), ...product };
     products.push(productToAdd);
-    await fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2));
+    fs.promises.writeFile(this.#path, JSON.stringify(products, null, 2));
 
     return productToAdd;
   }
@@ -82,8 +86,12 @@ export default class ProductManager {
   }
 
   #getId(products) {
-    let id = 0;
-    products.length === 0 ? (id = 1) : (id = products.length + 1);
-    return id;
+    if (products.length === 0) {
+      return 1; // Si no hay productos, el primer ID es 1
+    } else {
+      // Encontrar el ID más alto y sumarle 1 para obtener un ID único
+      const highestId = Math.max(...products.map((product) => product.id));
+      return highestId + 1;
+    }
   }
 }

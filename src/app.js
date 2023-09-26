@@ -1,9 +1,15 @@
 import express from 'express';
-import productRouter from './api/products/products.router.js';
-import cartRouter from './api/carts/carts.router.js';
-import productsViewRouter from './api/products/productsView.router.js';
+import productRouter from './routers/products/products.router.js';
+import cartRouter from './routers/carts/carts.router.js';
+import productsViewRouter from './routers/products/productsView.router.js';
 import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
+
+/* 
+* MongoDB
+*   User: mathienso
+*   Pss: c3HgLytuAIUc5Ebn
+*/
 
 //inicio app con express
 const app = express();
@@ -25,8 +31,8 @@ app.use(express.json());
 
 //configuro los routers
 app.use('/', productsViewRouter);
-app.use('/products', productRouter);
-app.use('/carts', cartRouter);
+app.use('/api/products', productRouter);
+app.use('/api/carts', cartRouter);
 
 io.on('connection', (socket) => {
   console.log('nuevo cliente');

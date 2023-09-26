@@ -1,45 +1,23 @@
 [
   {
     "id": 1,
-    "title": "qwe",
-    "description": "qwe",
-    "price": "123",
-    "code": "qwe",
-    "stock": "123",
-    "category": "qwe",
+    "title": "test2",
+    "description": "test2",
+    "price": "22",
+    "code": "ewrgvyjne",
+    "stock": 12,
+    "category": "test2",
     "status": true,
     "thumbnail": []
   },
   {
     "id": 2,
-    "title": "asd",
-    "description": "asd",
-    "price": "123",
-    "code": "asd",
-    "stock": "123",
-    "category": "aqsd",
-    "status": true,
-    "thumbnail": []
-  },
-  {
-    "id": 3,
-    "title": "zxc",
-    "description": "zxc",
-    "price": "123",
-    "code": "zxc",
-    "stock": "123",
-    "category": "zxc",
-    "status": true,
-    "thumbnail": []
-  },
-  {
-    "id": 4,
-    "title": "qqrqr",
-    "description": "wqerwewer",
-    "price": "12321",
-    "code": "wewefw",
-    "stock": "1234",
-    "category": "aaf",
+    "title": "test2",
+    "description": "test2",
+    "price": "22",
+    "code": "asda",
+    "stock": 12,
+    "category": "test2",
     "status": true,
     "thumbnail": []
   }
