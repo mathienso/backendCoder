@@ -1,41 +1,59 @@
 import { Router } from 'express';
 import ProductManager from '../../ProductManager.js';
-
+import productModel from '../../models/product.model.js'
 const router = Router();
 const productManager = new ProductManager('./data/products.json');
 
 router.get('/', async (req, res) => {
   try {
-    const products = await productManager.getProducts();
-    const limit = req.query.limit;
-    if (!limit || limit > products.length) {
-      res.send({ payload: products });
-      return;
+    const limit = req.query.limit || 10;
+    const page = req.query.page || 1;
+    const filterOptions = {};
+    if (req.query.stock) filterOptions.stock = req.query.stock;
+    if (req.query.category) filterOptions.category = req.query.category;
+    const paginateOptions = { lean: true, limit, page };
+    if (req.query.sort === 'asc') paginateOptions.sort = { price: 1 };
+    if (req.query.sort === 'desc') paginateOptions.sort = { price: -1 };
+    const result = await productModel.paginate(filterOptions, paginateOptions);
+    let prevLink;
+    if (!req.query.page) {
+      prevLink = `http://${req.hostname}:8080${req.originalUrl}&page=${result.prevPage}`;
+    } else {
+      const modifiedUrl = req.originalUrl.replace(`page=${req.query.page}`, `page=${result.prevPage}`);
+      prevLink = `http://${req.hostname}:8080${modifiedUrl}`;
     }
-    let productsLimit = [];
-    for (let index = 0; index < limit; index++) {
-      productsLimit.push(products[index]);
+    let nextLink;
+    if (!req.query.page) {
+      nextLink = `http://${req.hostname}:8080${req.originalUrl}&page=${result.nextPage}`;
+    } else {
+      const modifiedUrl = req.originalUrl.replace(`page=${req.query.page}`, `page=${result.nextPage}`);
+      nextLink = `http://${req.hostname}:8080${modifiedUrl}`;
     }
-    res.send({ payload: productsLimit });
+    res.send({
+      status: 'success',
+      payload: result.docs,
+      totalPages: result.totalPages,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevLink: result.hasPrevPage ? prevLink : null,
+      nextLink: result.hasNextPage ? nextLink : null,
+    });
   } catch (e) {
-    res.status(500).send(e.message);
-  }
-});
-
-router.get('/:pid', async (req, res) => {
-  try {
-    const pid = req.params.pid;
-    let product = await productManager.getProductById(parseInt(pid));
-    res.send({ payload: product });
-  } catch (e) {
-    res.status(500).send(e.message);
+    res.status(500).send({
+      status: 'error',
+      error: e.message,
+    });
   }
 });
 
 router.post('/', async (req, res) => {
+  const prod = req.body;
+  let productToAdd = new productModel(prod);
   try {
-    const prod = req.body;
-    let productToAdd = await productManager.addProduct(prod);
+    await productToAdd.save();
     res.send({ message: 'Producto agregado correctamente', payload: productToAdd });
   } catch (e) {
     res.status(500).send(e.message);
@@ -43,34 +61,24 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:pid', async (req, res) => {
+  const id = req.params.pid;
+  const updatedProduct = req.body;
   try {
-    const pid = parseInt(req.params.pid);
-    if (req.body.id) {
-      throw new Error('No se puede modificar el ID de un producto');
-    }
-    let updatedProduct = await productManager.updateProduct(pid, req.body);
-    res.send({ message: 'Producto modificado correctamente', payload: updatedProduct });
+    const result = await productModel.updateOne({ _id: id }, { $set: updatedProduct });
+    res.send({ message: 'Producto modificado correctamente', payload: result });
   } catch (e) {
-    res.status(500).send(e.message);
+    return res.status(500).send(e.message);
   }
 });
 
 router.delete('/:pid', async (req, res) => {
+  const id = req.params.pid;
   try {
-    const pid = parseInt(req.params.pid);
-    let products = await productManager.deleteProduct(pid);
-    res.send({ message: 'Producto eliminado correctamente', payload: products });
+    await productModel.deleteOne({ _id: id });
+    res.send({ status: 'Success', message: 'Producto borrado' });
   } catch (e) {
-    res.status(500).send(e.message);
+    return res.send(e.message);
   }
 });
 
 export default router;
-/* 
-try {
-  
-  res.send({ payload: products });
-} catch (e) {
-  res.status(500).send(e.message);
-}
- */
