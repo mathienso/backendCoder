@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import ProductManager from '../../ProductManager.js';
-import productModel from '../../models/product.model.js'
+import productModel from '../../models/product.model.js';
 const router = Router();
 const productManager = new ProductManager('./data/products.json');
 
-router.get('/', async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
     const limit = req.query.limit || 10;
     const page = req.query.page || 1;
@@ -29,24 +29,32 @@ router.get('/', async (req, res) => {
       const modifiedUrl = req.originalUrl.replace(`page=${req.query.page}`, `page=${result.nextPage}`);
       nextLink = `http://${req.hostname}:8080${modifiedUrl}`;
     }
-    res.send({
-      status: 'success',
-      payload: result.docs,
-      totalPages: result.totalPages,
-      prevPage: result.prevPage,
-      nextPage: result.nextPage,
-      page: result.page,
-      hasPrevPage: result.hasPrevPage,
-      hasNextPage: result.hasNextPage,
-      prevLink: result.hasPrevPage ? prevLink : null,
-      nextLink: result.hasNextPage ? nextLink : null,
-    });
+    return {
+      statusCode: 200,
+      response: {
+        status: 'success',
+        payload: result.docs,
+        totalPages: result.totalPages,
+        prevPage: result.prevPage,
+        nextPage: result.nextPage,
+        page: result.page,
+        hasPrevPage: result.hasPrevPage,
+        hasNextPage: result.hasNextPage,
+        prevLink: result.hasPrevPage ? prevLink : null,
+        nextLink: result.hasNextPage ? nextLink : null,
+      },
+    };
   } catch (e) {
-    res.status(500).send({
-      status: 'error',
-      error: e.message,
-    });
+    return {
+      statusCode: 500,
+      response: { status: 'error', error: e.message },
+    };
   }
+};
+
+router.get('/', async (req, res) => {
+  const result = await getProducts(req, res);
+  res.status(result.statusCode).json(result.response);
 });
 
 router.post('/', async (req, res) => {
@@ -75,7 +83,8 @@ router.delete('/:pid', async (req, res) => {
   const id = req.params.pid;
   try {
     await productModel.deleteOne({ _id: id });
-    res.send({ status: 'Success', message: 'Producto borrado' });
+    const products = await productModel.find().lean();
+    res.send({ status: 'Success', message: 'Producto borrado', payload: products });
   } catch (e) {
     return res.send(e.message);
   }

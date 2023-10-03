@@ -24,11 +24,12 @@ document.getElementById('btnAddProduct').addEventListener('click', () => {
     .then((result) => {
       if (result.status === 'error') throw new Error(result.error);
     })
-    .then(() => fetch('/products'))
+    .then(() => fetch('/api/products'))
     .then((result) => result.json())
     .then((result) => {
       if (result.status === 'error') throw new Error(result.error);
       socket.emit('productList', result.payload);
+      alert('Producto creado correctamente');
       document.getElementById('title').value = '';
       document.getElementById('description').value = '';
       document.getElementById('price').value = '';
@@ -36,7 +37,7 @@ document.getElementById('btnAddProduct').addEventListener('click', () => {
       document.getElementById('stock').value = '';
       document.getElementById('category').value = '';
     })
-    .catch((err) => console.log(err));
+    .catch((err) => alert(err));
 });
 
 deleteProduct = (id) => {
@@ -45,11 +46,10 @@ deleteProduct = (id) => {
   })
     /* .then((result) => {
       socket.emit('message', result);
-    }) */
+    })  */
     .then((result) => result.json())
     .then((result) => {
-      //if (result.status === 'error') throw new Error(result.error);
-      socket.emit('message', result);
+      if (result.status === 'error') throw new Error(result.error);
       socket.emit('productList', result.payload);
       alert('producto eliminado correctamente');
     })
@@ -66,7 +66,7 @@ socket.on('updatedProducts', (data) => {
             <td>Stock</td>
             <td>Categoria</td>
         </tr>`;
-  socket.emit('message', 'entro a updatear');
+  //socket.emit('message', 'entro a updatear');
   for (product of data) {
     let tr = document.createElement('tr');
     tr.innerHTML = `

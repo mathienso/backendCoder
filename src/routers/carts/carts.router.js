@@ -1,10 +1,25 @@
 import { Router } from 'express';
 import CartManager from '../../CartsManager.js';
 import cartModel from '../../models/cart.model.js';
-import productModel from '../../models/product.model.js';
 
 const router = Router();
 const cartManager = new CartManager('./data/carts.json');
+
+export const getProductsFromCart = async (req, res) => {
+  const id = req.params.cid;
+  try {
+    const result = await cartModel.find({ _id: id }).populate('products.product').lean();
+    return {
+      statusCode: 200,
+      response: { status: 'success', payload: result },
+    };
+  } catch (e) {
+    return {
+      statusCode: 500,
+      response: { status: 'error', error: e.message },
+    };
+  }
+};
 
 router.get('/', async (req, res) => {
   try {
@@ -18,21 +33,16 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const cart = req.body;
   try {
-    await cartModel.create(cart);
-    res.send({ status: 'success', payload: cart });
+    const result = await cartModel.create(cart);
+    res.send({ status: 'success', payload: result });
   } catch (e) {
     res.status(500).send({ status: 'error', error: e.message });
   }
 });
 
 router.get('/:cid', async (req, res) => {
-  const id = req.params.cid;
-  try {
-    const result = await cartModel.find({ _id: id }).populate('products.product');
-    res.send({ status: 'sucess', payload: result });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const result = await getProductsFromCart(req, res);
+  res.status(result.statusCode).json(result.response);
 });
 
 router.post('/:cid/products/:pid', async (req, res) => {

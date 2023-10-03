@@ -1,17 +1,59 @@
 <div>
   <h1>Lista de productos:</h1>
-  <table>
+  <div>
+    {{#if paginateInfo.hasPrevPage}}
+        <a href="{{paginateInfo.prevLink}}">Anterior</a>
+    {{/if}}
+    {{#each paginateInfo.totalPages}}
+        <a href="{{this.link}}">{{this.page}}</a>
+    {{/each}}
+    {{#if paginateInfo.hasNextPage}}
+        <a href="{{paginateInfo.nextLink}}">Siguiente</a>
+    {{/if}}
+  </div>
+  <table id='table'>
+    <tr>
+      <td></td>
+      <td>Producto</td>
+      <td>Descripcion</td>
+      <td>Precio</td>
+      <td>Codigo</td>
+      <td>Stock</td>
+      <td>Categoria</td>
+    </tr>
     {{#each products}}
       <tr>
-        <td>Titulo: {{this.title}}</td>
-        <td>Descripcion: {{this.description}}</td>
-        <td>Precio: {{this.price}}</td>
-        <td>Status: {{this.status}}</td>
-        <td>Thumbnail: {{this.thumbnail}}</td>
-        <td>Code: {{this.code}}</td>
-        <td>Stock: {{this.stock}}</td>
-        <td>Id: {{this.id}}</td>
+        <td><button onclick="addProductToCart('{{this._id}}')">Agregar al carrito</button></td>
+        <td>{{this.title}}</td>
+        <td>{{this.description}}</td>
+        <td>{{this.price}}</td>
+        <td>{{this.code}}</td>
+        <td>{{this.stock}}</td>
+        <td>{{this.category}}</td>
       </tr>
     {{/each}}
   </table>
 </div>
+<script>
+  let cartId;
+  fetch(`/api/carts`, {
+    method: 'post'
+  })
+    .then(result => result.json())
+    .then(result => {
+      if (result.status === 'error') throw new Error(result.error)
+      cartId = result.payload._id
+    })
+    .catch(err => alert(`Ocurrió un error :(\n${err}`))
+  addProductToCart = (pid) => {
+    fetch(`/api/carts/${cartId}/products/${pid}`, {
+      method: 'post'
+    })
+      .then(result => result.json())
+      .then(result => {
+          if (result.status === 'error') throw new Error(result.error);
+          alert('Se agregó el producto al carrito');
+      })
+      .catch(err => alert(`Ocurrió un error :(\n${err}`))
+    }
+</script>
