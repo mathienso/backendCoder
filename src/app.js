@@ -2,10 +2,14 @@ import express from 'express';
 import { Server } from 'socket.io';
 import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import productRouter from './routers/products/products.router.js';
 import cartRouter from './routers/carts/carts.router.js';
 import productsViewRouter from './routers/products/productsView.router.js';
-import cartsViewRouter from './routers/carts/cartsView.router.js'
+import cartsViewRouter from './routers/carts/cartsView.router.js';
+import sessionRouter from './routers/sessions/session.router.js';
+import sessionsViewRouter from './routers/sessions/sessionsView.router.js';
 
 /*
  * MongoDB
@@ -37,10 +41,24 @@ try {
   //uso express json para poder hacer las peticiones correctamente
   app.use(express.json());
 
-  //configuro los routers
-  app.use('/', productsViewRouter);
+  //configuro session con mongo
+  app.use(
+    session({
+      store: new MongoStore({
+        mongoUrl: "mongodb+srv://mathienso:c3HgLytuAIUc5Ebn@clustertest.riwkwij.mongodb.net/coder",
+        ttl: 3600,
+      }),
+      secret: 'CoderSecret',
+      resave: false,
+      saveUninitialized: false,
+    })
+  );
+
+  //configuro los routers (endpoints y views)
+  app.use('/', sessionsViewRouter);
   app.use('/api/products', productRouter);
   app.use('/api/carts', cartRouter);
+  app.use('/api/session', sessionRouter);
   app.use('/products', productsViewRouter);
   app.use('/carts', cartsViewRouter);
 

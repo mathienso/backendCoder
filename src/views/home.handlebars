@@ -1,4 +1,11 @@
 <div>
+  <div>
+    <h2>Bienvenido {{user.name}}</h2>
+    <p>Tu email es: {{user.email}}</p>
+    <p>Tu edad es: {{user.age}}</p>
+    <h3>Usted es un {{user.rol}}</h3>
+    <a href="/api/session/logout"><button>Salir</button></a>
+  </div>
   <h1>Lista de productos:</h1>
   <div>
     {{#if paginateInfo.hasPrevPage}}

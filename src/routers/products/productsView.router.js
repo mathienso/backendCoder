@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { getProducts } from './products.router.js';
+import { publicAcces } from '../../middlewares/auth.middleware.js';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', publicAcces, async (req, res) => {
   const result = await getProducts(req, res);
   if (result.statusCode === 200) {
     const totalPages = [];
@@ -19,6 +20,7 @@ router.get('/', async (req, res) => {
     }
     res.render('home', {
       products: result.response.payload,
+      user: req.session.user,
       paginateInfo: {
         hasPrevPage: result.response.hasPrevPage,
         hasNextPage: result.response.hasNextPage,
