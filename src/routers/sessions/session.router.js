@@ -24,26 +24,25 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const user = await userModel.findOne({ email, password });
-
-  if (!user) {
-    return res.status(400).send({ status: 'error', error: 'Datos incorrectos' });
-  }
-
-  if (user.email === 'adminCoder@coder.com' && user.password === 'adminCod3r123') {
+  if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
     req.session.user = {
-      name: `${user.first_name} ${user.last_name}`,
-      email: user.email,
-      age: user.age,
+      name: `Coder House`,
+      email: email,
       rol: 'admin',
     };
   } else {
-    req.session.user = {
-      name: `${user.first_name} ${user.last_name}`,
-      email: user.email,
-      age: user.age,
-      rol: 'user',
-    };
+    const user = await userModel.findOne({ email, password });
+
+    if (!user) {
+      return res.status(400).send({ status: 'error', error: 'Datos incorrectos' });
+    } else {
+      req.session.user = {
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        age: user.age,
+        rol: 'user',
+      };
+    }
   }
   res.send({ status: 'success', payload: req.res.user, message: 'Primer logueo!!' });
 });
