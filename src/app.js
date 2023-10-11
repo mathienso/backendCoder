@@ -4,17 +4,24 @@ import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import passport from 'passport';
 import productRouter from './routers/products/products.router.js';
 import cartRouter from './routers/carts/carts.router.js';
 import productsViewRouter from './routers/products/productsView.router.js';
 import cartsViewRouter from './routers/carts/cartsView.router.js';
 import sessionRouter from './routers/sessions/session.router.js';
 import sessionsViewRouter from './routers/sessions/sessionsView.router.js';
+import initializePassport from './config/passport.config.js';
 
 /*
  * MongoDB
  *   User: mathienso
  *   Pss: c3HgLytuAIUc5Ebn
+ * 
+ * GithubApp
+ *   App ID: 406900
+ *   Client ID: Iv1.62d564f261133d94
+ *   Client Secret: 486585253a04d3f98536371e284ce8c5bed35953
  */
 
 //inicio app con express
@@ -45,7 +52,7 @@ try {
   app.use(
     session({
       store: new MongoStore({
-        mongoUrl: "mongodb+srv://mathienso:c3HgLytuAIUc5Ebn@clustertest.riwkwij.mongodb.net/coder",
+        mongoUrl: 'mongodb+srv://mathienso:c3HgLytuAIUc5Ebn@clustertest.riwkwij.mongodb.net/coder',
         ttl: 3600,
       }),
       secret: 'CoderSecret',
@@ -53,6 +60,10 @@ try {
       saveUninitialized: false,
     })
   );
+  //inicializo passport
+  initializePassport();
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   //configuro los routers (endpoints y views)
   app.use('/', sessionsViewRouter);

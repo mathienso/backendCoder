@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, require: true },
   age: { type: Number, require: true },
   password: { type: String, require: true },
-  rol: { type: String, require: true, default: "usuario" },
+  rol: { type: String, require: true, default: 'User' },
 });
 
 userSchema.plugin(mongoosePaginate);

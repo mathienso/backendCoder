@@ -4,7 +4,7 @@ import { publicAcces } from '../../middlewares/auth.middleware.js';
 
 const router = Router();
 
-router.get('/', publicAcces, async (req, res) => {
+router.get('/', async (req, res) => {
   const result = await getProducts(req, res);
   if (result.statusCode === 200) {
     const totalPages = [];
