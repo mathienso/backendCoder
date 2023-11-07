@@ -12,6 +12,7 @@ import cartsViewRouter from './routers/carts/cartsView.router.js';
 import sessionRouter from './routers/sessions/session.router.js';
 import sessionsViewRouter from './routers/sessions/sessionsView.router.js';
 import initializePassport from './config/passport.config.js';
+import config from './config/config.js';
 
 /*
  * MongoDB
@@ -28,12 +29,12 @@ import initializePassport from './config/passport.config.js';
 const app = express();
 //conecto Atlas con mongoose
 try {
-  await mongoose.connect('mongodb+srv://mathienso:c3HgLytuAIUc5Ebn@clustertest.riwkwij.mongodb.net/?retryWrites=true&w=majority', {
-    dbName: 'coder',
+  await mongoose.connect(config.mongoUrl, {
+    dbName: config.db,
   });
   console.log('DB Conected!');
-  const httpServer = app.listen(8080, () => {
-    console.log('Servidor funcionando en el puerto: ' + 8080);
+  const httpServer = app.listen(config.port, () => {
+    console.log('Servidor funcionando en el puerto: ' + config.port);
   });
   //inicio websockets
   const io = new Server(httpServer);
@@ -52,10 +53,10 @@ try {
   app.use(
     session({
       store: new MongoStore({
-        mongoUrl: 'mongodb+srv://mathienso:c3HgLytuAIUc5Ebn@clustertest.riwkwij.mongodb.net/coder',
+        mongoUrl: config.mongoUrl ,
         ttl: 3600,
       }),
-      secret: 'CoderSecret',
+      secret: config.secretSession,
       resave: false,
       saveUninitialized: false,
     })

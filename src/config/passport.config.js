@@ -2,7 +2,8 @@ import passport from 'passport';
 import local from 'passport-local';
 import GitHubStrategy from 'passport-github2';
 import { createHash, isValidPassword } from '../utils.js';
-import userModel from '../models/user.model.js';
+import userModel from '../dao/models/user.model.js';
+import config from './config.js';
 
 const localStrategy = local.Strategy;
 
@@ -44,7 +45,7 @@ const initializePassport = () => {
         usernameField: 'email',
       },
       async (username, password, done) => {
-        if (username === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+        if (username === config.adminEmail && password === config.adminPassword) {
           const user = {
             name: 'Coder House',
             email: username,
