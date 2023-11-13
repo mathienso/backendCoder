@@ -1,4 +1,5 @@
-import productModel from '../dao/models/product.model.js';
+import ProductsService from '../services/productsService.js';
+const productsService = new ProductsService();
 
 export const getProducts = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ export const getProducts = async (req, res) => {
     const paginateOptions = { lean: true, limit, page };
     if (req.query.sort === 'asc') paginateOptions.sort = { price: 1 };
     if (req.query.sort === 'desc') paginateOptions.sort = { price: -1 };
-    const result = await productModel.paginate(filterOptions, paginateOptions);
+    let result = await productsService.getProducts(filterOptions, paginateOptions);
     let prevLink;
     if (!req.query.page) {
       prevLink = `http://${req.hostname}:8080${req.originalUrl}&page=${result.prevPage}`;
@@ -54,34 +55,20 @@ export const getProductsController = async (req, res) => {
 };
 
 export const addProductController = async (req, res) => {
-  const prod = req.body;
-  let productToAdd = new productModel(prod);
-  try {
-    await productToAdd.save();
-    res.send({ message: 'Producto agregado correctamente', payload: productToAdd });
-  } catch (e) {
-    res.status(500).send(e.message);
-  }
+  const product = req.body;
+  let result = await productsService.addProduct(product);
+  res.send(result);
 };
 
 export const updateProductController = async (req, res) => {
   const id = req.params.pid;
   const updatedProduct = req.body;
-  try {
-    const result = await productModel.updateOne({ _id: id }, { $set: updatedProduct });
-    res.send({ message: 'Producto modificado correctamente', payload: result });
-  } catch (e) {
-    return res.status(500).send(e.message);
-  }
+  let result = await productsService.updateProduct(id, updatedProduct);
+  res.send(result);
 };
 
 export const deleteProductController = async (req, res) => {
   const id = req.params.pid;
-  try {
-    await productModel.deleteOne({ _id: id });
-    const products = await productModel.find().lean();
-    res.send({ status: 'Success', message: 'Producto borrado', payload: products });
-  } catch (e) {
-    return res.send(e.message);
-  }
+  let result = await productsService.deleteProduct(id);
+  res.send(result);
 };

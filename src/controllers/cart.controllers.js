@@ -1,9 +1,11 @@
-import cartModel from '../dao/models/cart.model.js';
+import CartsService from '../services/cartsService.js';
+const cartsService = new CartsService();
 
 export const getProductsFromCart = async (req, res) => {
   const id = req.params.cid;
   try {
-    const result = await cartModel.find({ _id: id }).populate('products.product').lean();
+    //const result = await cartModel.find({ _id: id }).populate('products.product').lean();
+    const result = cartsService.getProductsFromCart(id);
     return {
       statusCode: 200,
       response: { status: 'success', payload: result },
@@ -17,12 +19,8 @@ export const getProductsFromCart = async (req, res) => {
 };
 
 export const getCartsController = async (req, res) => {
-  try {
-    const result = await cartModel.find();
-    res.send({ status: 'success', payload: result });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const result = await cartsService.getCarts();
+  res.send(result);
 };
 
 export const getCartByIdController = async (req, res) => {
@@ -32,90 +30,40 @@ export const getCartByIdController = async (req, res) => {
 
 export const createCartController = async (req, res) => {
   const cart = req.body;
-  try {
-    const result = await cartModel.create(cart);
-    res.send({ status: 'success', payload: result });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const result = cartsService.addCart(cart);
+  res.send(result);
 };
 
 export const addProductToCartController = async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
-  try {
-    const cart = await cartModel.findOne({ _id: cid });
-    const productIndex = cart.products.findIndex((cprod) => cprod.product == pid);
-
-    if (productIndex === -1) {
-      const product = {
-        product: pid,
-        quantity: 1,
-      };
-      cart.products.push(product);
-    } else {
-      let total = cart.products[productIndex].quantity;
-      cart.products[productIndex].quantity = total + 1;
-    }
-    await cartModel.updateOne({ _id: cid }, { $set: cart });
-    res.send({ status: 'sucess', payload: cart.products });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const result = cartsService.addProductToCart(cid, pid);
+  res.send(result);
 };
 
 export const updateCartController = async (req, res) => {
   const cid = req.params.cid;
-  try {
-    const updatedCart = await cartModel.findOne({ _id: cid });
-    updatedCart.products = req.body;
-    await cartModel.updateOne({ _id: cid }, { $set: updatedCart });
-    res.send({ status: 'sucess', payload: updatedCart.products });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const products = req.body;
+  const result = await cartsService.updateCart(cid, products);
+  res.send(result)
 };
 
 export const updateProductFromCartController = async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
-  try {
-    const updatedCart = await cartModel.findOne({ _id: cid });
-    const productIndex = updatedCart.products.findIndex((cprod) => cprod.product == pid);
-    if (productIndex != -1 && !isNaN(req.body.quantity)) {
-      updatedCart.products[productIndex].quantity = req.body.quantity;
-    }
-    await cartModel.updateOne({ _id: cid }, { $set: updatedCart });
-    res.send({ status: 'sucess', payload: updatedCart.products });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const result = await cartsService.updateProductFromCart(cid, pid);
+  res.send(result);
 };
 
 export const deleteCartController = async (req, res) => {
-  const cid = req.params.cid;
-  try {
-    const updatedCart = await cartModel.findOne({ _id: cid });
-    updatedCart.products = [];
-    await cartModel.updateOne({ _id: cid }, { $set: updatedCart });
-    res.send({ status: 'sucess', payload: updatedCart.products });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const id = req.params.cid;
+  const result = await cartsService.deleteCart(id);
+  res.send(result);
 };
 
 export const deleteProductFromCartController = async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
-  try {
-    const updatedCart = await cartModel.findOne({ _id: cid });
-    const productIndex = updatedCart.products.findIndex((cprod) => cprod.product == pid);
-    if (productIndex != -1) {
-      updatedCart.products.splice(productIndex, 1);
-    }
-    await cartModel.updateOne({ _id: cid }, { $set: updatedCart });
-    res.send({ status: 'sucess', payload: updatedCart.products });
-  } catch (e) {
-    res.status(500).send({ status: 'error', error: e.message });
-  }
+  const result = await cartsService.deleteProductFromCart(cid, pid);
+  res.send(result);
 };
