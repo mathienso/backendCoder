@@ -31,15 +31,15 @@ export default class CartsService {
     return await this.cartsDao.update(id, products);
   }
 
-  updateProductFromCart = async (cid, pid) => {
-    return await this.cartsDao.updateProductsFromCart(cid, pid);
+  updateProductFromCart = async (cid, pid, body) => {
+    return await this.cartsDao.updateProductsFromCart(cid, pid, body);
   }
 
   deleteCart = async (id) => {
     return await this.cartsDao.delete(id);
   }
 
-  deleteCart = async (cid, pid) => {
+  deleteProductFromCart = async (cid, pid) => {
     return await this.cartsDao.deleteProductFromCart(cid, pid);
   }
 }

@@ -55,19 +55,19 @@ export default class CartDAO {
     try {
       const updatedCart = await this.model.findOne({ _id: id });
       updatedCart.products = products;
-      await this.model.updateOne({ _id: cid }, { $set: updatedCart });
+      await this.model.updateOne({ _id: id }, { $set: updatedCart });
       return { status: 'sucess', payload: updatedCart.products };
     } catch (e) {
       return { status: 'error', error: e.message };
     }
   };
 
-  updateProductsFromCart = async (cid, pid) => {
+  updateProductsFromCart = async (cid, pid, body) => {
     try {
       const updatedCart = await this.model.findOne({ _id: cid });
       const productIndex = updatedCart.products.findIndex((cprod) => cprod.product == pid);
-      if (productIndex != -1 && !isNaN(req.body.quantity)) {
-        updatedCart.products[productIndex].quantity = req.body.quantity;
+      if (productIndex != -1 && !isNaN(body.quantity)) {
+        updatedCart.products[productIndex].quantity = body.quantity;
       }
       await this.model.updateOne({ _id: cid }, { $set: updatedCart });
       return { status: 'sucess', payload: updatedCart.products };

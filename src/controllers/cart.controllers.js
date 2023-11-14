@@ -51,7 +51,7 @@ export const updateCartController = async (req, res) => {
 export const updateProductFromCartController = async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
-  const result = await cartsService.updateProductFromCart(cid, pid);
+  const result = await cartsService.updateProductFromCart(cid, pid, req.body);
   res.send(result);
 };
 
