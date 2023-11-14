@@ -5,7 +5,7 @@ export const getProductsFromCart = async (req, res) => {
   const id = req.params.cid;
   try {
     //const result = await cartModel.find({ _id: id }).populate('products.product').lean();
-    const result = cartsService.getProductsFromCart(id);
+    const result = await cartsService.getProductsFromCart(id);
     return {
       statusCode: 200,
       response: { status: 'success', payload: result },
@@ -25,19 +25,19 @@ export const getCartsController = async (req, res) => {
 
 export const getCartByIdController = async (req, res) => {
   const result = await getProductsFromCart(req, res);
-  res.status(result.statusCode).json(result.response);
+  res.status(result.statusCode).send(result.response);
 };
 
 export const createCartController = async (req, res) => {
   const cart = req.body;
-  const result = cartsService.addCart(cart);
+  const result = await cartsService.addCart(cart);
   res.send(result);
 };
 
 export const addProductToCartController = async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
-  const result = cartsService.addProductToCart(cid, pid);
+  const result = await cartsService.addProductToCart(cid, pid);
   res.send(result);
 };
 

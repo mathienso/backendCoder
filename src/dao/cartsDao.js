@@ -7,8 +7,7 @@ export default class CartDAO {
   }
 
   getProductsFromCart = async (id) => {
-    let result = await this.model.find({ _id: id }).populate('products.product').lean();
-    console.log(result)
+    let result = await this.model.findById({ _id: id }).populate('products.product').lean().exec();
     return result;
   };
 
